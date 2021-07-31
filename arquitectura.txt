@@ -1,0 +1,10 @@
+tasks:
+	descripcion
+	usuario asignado
+	fecha maxima de ejecucion 
+users:
+	tarea asignada
+logs:
+	tarea
+	comentario 
+	fecha del comentario 
