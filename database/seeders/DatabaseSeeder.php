@@ -32,6 +32,7 @@ class DatabaseSeeder extends Seeder
             'password'=> Hash::make('user1234')
         ]);
         DB::table('tasks')->insert([
+            'user_id'=>'2',
             'description'=> 'abcd',
             'expiration'=> '2022-1-1',
         ]);
