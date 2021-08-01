@@ -11,14 +11,17 @@ Product (id, invoice_id, name, quantity, price)
 En base a esas estructuras, genera utilizando Eloquent, las consultas para obtener la siguiente información:
 
 Obtener precio total de la factura.
-	$total = Product::where('invoice_id', $ivoice_id)->sum(DB::raw('products.quantity * products.price'));
+	
+	-$total = Product::where('invoice_id', $ivoice_id)->sum(DB::raw('products.quantity * products.price'));
 	Donde $ivoice_id seria el numero de factura que el usuario solicite
 
 Obtener todos id de las facturas que tengan productos con cantidad mayor a 100.
-	$total = DB::table('products')->where('quantity','>',100)->distinct()->get('invoice_id');
+	
+	-$total = DB::table('products')->where('quantity','>',100)->distinct()->get('invoice_id');
 
 Obtener todos los nombres de los productos cuyo valor final sea superior a $1.000.000 CLP.
-	$total = DB::table('products')->where(DB::raw('products.quantity * products.price'),'>',1000000)->get('name');
+	
+	-$total = DB::table('products')->where(DB::raw('products.quantity * products.price'),'>',1000000)->get('name');
 
 
 
@@ -47,6 +50,21 @@ Desafío 3:
 
 Respecto a la estructura de datos del desafío 1, agrega a "Invoice" un campo "total" y escribe un Observador (Observer) en el que cada vez que se inserter un registro en la tabla "Product", aumente el valor de "total" de la tabla "Invoice".
 
+	Haciendo uso de las herramientas de Laravel, usando el comando "php artisan make:observer *nombre del observador* --model=*Nuestro modelo a observar*" se creará nuestro observador. Ahora debemos registrarlo en nuestro archivo AppServiceProvider.php y en la funcion "boot()" agregar lo siguiente: 
+	*nuestro modelo*::observe(*nuestro observador*::class);
+	Yendo al archivo de nuestro observador agregamos las siguientes lineas de codigo en la funcion "created()"
+
+	$invoice = Invoice::where('id',$product->invoice_id)->first();
+	Buscamos la factura que posee el id del producto ingresado
+
+        $total = Product::where('invoice_id', $product->invoice_id)->sum(DB::raw('products.quantity * products.price'));
+	Calculamos el total de la venta realizada de ese producto (cantiad*precio)
+
+	$invoice->total = $total;
+	Asignamos el total calculado a nuestro modelo de factura previamente solicitado
+
+        $invoice->save();
+	Guardamos nuestro modelo modificado el cual tambien modificara el registro de la base de datos
 
 
 Desafío 4:
@@ -55,7 +73,8 @@ Desafío 4:
 
 Explícanos ¿qué es "Laravel Jetstream"? y ¿qué permite "Livewire" a los programadores?
 
-	-
+	-Laravel Jestream es un starter kit creado para este framework. Un starter kit es un molde de aplicación que tiene las funciones que comummente se requieren en un sitio web. Jetstream incluye una pagina de inicio con un sistema de inicios de sesion y un "dashboard" que es una pagina donde interactuará el usuario ya registrado y con sesión iniciada.
+	-Si bien Jetstream incluye muchas herramientas en el back-end, tambien ofrece herramientas para el front-end. Tal es el caso de Livewire que proporciona muchas facilidades para desarrollar una interfaz mas atractiva y mas personalizable que bootstrap por ejemplo.
 
 
 
